@@ -6,12 +6,12 @@ namespace Talabat.APIs
 {
 	public class Program
 	{
-        public static async Task Main(string[] args)
+		public static async Task Main(string[] args)
 		{
 			var webApplicationBuilder = WebApplication.CreateBuilder(args);
 
 			#region Configure Services
-			
+
 			// Add services to the container.
 
 			webApplicationBuilder.Services.AddControllers();
@@ -48,8 +48,10 @@ namespace Talabat.APIs
 
 			}
 
+			await StoreContextSeed.SeedAsync(_dbContext);
+
 			#region Configure Kestrel Middlewares
-			
+
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
 			{
@@ -63,7 +65,7 @@ namespace Talabat.APIs
 
 			#endregion
 
-			app.Run(); 
+			app.Run();
 
 		}
 	}
