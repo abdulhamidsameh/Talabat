@@ -46,8 +46,8 @@ namespace Talabat.Infrastructure.Data.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    BrandId = table.Column<int>(type: "int", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,14 +56,12 @@ namespace Talabat.Infrastructure.Data.Migrations
                         name: "FK_Products_ProductBrands_BrandId",
                         column: x => x.BrandId,
                         principalTable: "ProductBrands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Products_ProductCategories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "ProductCategories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

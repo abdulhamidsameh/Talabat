@@ -28,13 +28,11 @@ namespace Talabat.Infrastructure.Data.Configrations
 
 			builder.HasOne(P => P.Brand)
 				.WithMany()
-				.HasForeignKey(P => P.BrandId)
-				.OnDelete(DeleteBehavior.SetNull);
+				.HasForeignKey(P => P.BrandId);
 
 			builder.HasOne(P => P.Category)
 				.WithMany()
-				.HasForeignKey(P => P.CategoryId)
-				.OnDelete(DeleteBehavior.SetNull);
+				.HasForeignKey(P => P.CategoryId);
 
 		}
 	}

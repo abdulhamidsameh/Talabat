@@ -14,10 +14,10 @@ namespace Talabat.Core.Entities
         public decimal Price { get; set; }
 
 
-        public int BrandId { get; set; }
+        public int? BrandId { get; set; }
         public virtual ProductBrand Brand { get; set; } = null!;
 
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
         public virtual ProductCategory Category { get; set; } = null!;
 
     }
