@@ -23,7 +23,7 @@ namespace Talabat.APIs
 
 			webApplicationBuilder.Services.AddDbContext<StoreContext>(options =>
 			{
-				options.UseSqlServer(webApplicationBuilder.Configuration["ConnectionStrings:DefaultConnection"]);
+				options.UseSqlServer(webApplicationBuilder.Configuration["ConnectionStrings:DefaultConnection"]).UseLazyLoadingProxies();
 			});
 
 			webApplicationBuilder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
