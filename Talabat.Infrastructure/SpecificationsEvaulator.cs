@@ -23,7 +23,7 @@ namespace Talabat.Infrastructure
 
 			if (spec.Includes.Count > 0)
 				foreach (var include in spec.Includes)
-					query.Include(include);
+					query = query.Include(include);
 
 			return query;
 		} 
