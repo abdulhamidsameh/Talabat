@@ -68,6 +68,8 @@ namespace Talabat.APIs
 
 			app.MapControllers();
 
+			app.UseStaticFiles();
+
 			#endregion
 
 			app.Run();
