@@ -30,7 +30,7 @@ namespace Talabat.Infrastructure
 			=> await _dbContext.Set<T>().FindAsync(id);
 
 		public async Task<T?> GetWithSpecAsync(ISpecifications<T> spec)
-			=>  await ApplySpecifications(spec).FirstAsync();
+			=>  await ApplySpecifications(spec).FirstOrDefaultAsync();
 
 		private IQueryable<T> ApplySpecifications(ISpecifications<T> spec)
 			=> SpecificationsEvaulator<T>.GetQuery(_dbContext.Set<T>(), spec);

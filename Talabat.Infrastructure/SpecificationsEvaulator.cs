@@ -15,7 +15,7 @@ namespace Talabat.Infrastructure
 		{
 			var query = inputQuery;
 			if (spec.Criteria is not null)
-				query.Where(spec.Criteria);
+				query = query.Where(spec.Criteria);
 
 
 			//query = spec.Includes.Aggregate(query,(currentQuery,includeExpression) => currentQuery.Include(includeExpression));
