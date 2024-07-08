@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
+using Talabat.APIs.Middlewares;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Infrastructure;
 using Talabat.Infrastructure.Data;
@@ -35,8 +36,8 @@ namespace Talabat.APIs
 			{
 				options.InvalidModelStateResponseFactory = (actionContext) =>
 				{
-					var errors = actionContext.ModelState.Where(C => C.Value?.Errors.Count > 0)
-					.SelectMany(P => P.Value?.Errors)
+					var errors = actionContext.ModelState.Where(P => P.Value?.Errors.Count > 0)
+					.SelectMany(P => P.Value?.Errors!)
 					.Select(E => E.ErrorMessage)
 					.ToList();
 
@@ -76,6 +77,8 @@ namespace Talabat.APIs
 			await StoreContextSeed.SeedAsync(_dbContext);
 
 			#region Configure Kestrel Middlewares
+
+			app.UseMiddleware<ExceptionMiddleware>();
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
