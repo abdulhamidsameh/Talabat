@@ -29,11 +29,28 @@ namespace Talabat.APIs.Controllers
 
 		// baseUrl/api/Products
 		[HttpGet]
-		public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts()
+		public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? sort)
 		{
 			var spec = new BaseSpecifications<Product>();
 			spec.Includes.Add(P => P.Brand);
 			spec.Includes.Add(P => P.Category);
+			
+			switch (sort)
+			{
+				case "priceAsc":
+					spec.OrderBy = P => P.Price;
+						break;
+				case "priceDesc":
+					spec.OrderByDesc = P => P.Price;
+					break;
+				case "nameDesc":
+					spec.OrderByDesc = P => P.Name;
+					break;
+				default:
+					spec.OrderBy = P => P.Name;
+					break;
+			}
+
 			var products = await _productRepo.GetAllWithSpecAsync(spec);
 
 			if (products is null)

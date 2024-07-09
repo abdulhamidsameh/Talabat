@@ -11,6 +11,8 @@ namespace Talabat.Core.Specifications
 	public class BaseSpecifications<T> : ISpecifications<T> where T : BaseEntity
 	{
 		public Expression<Func<T, bool>> Criteria { get; set; } = null!;
+        public Expression<Func<T,object>> OrderBy { get; set; } = null!;
+		public Expression<Func<T,object>> OrderByDesc { get; set; } = null!;
 		public List<Expression<Func<T, object>>> Includes { get; set; } = new List<Expression<Func<T, object>>>();
 		public BaseSpecifications()
 			: this(null!)
