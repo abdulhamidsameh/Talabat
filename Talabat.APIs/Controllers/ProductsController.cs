@@ -31,15 +31,14 @@ namespace Talabat.APIs.Controllers
 		[HttpGet]
 		public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? sort,
 			int? brandId,
-			int? categoryId)
+			int? categoryId,
+			string? search)
 		{
 			var spec = new BaseSpecifications<Product>();
-			if (brandId.HasValue)
-				spec.Criteria = (P => P.BrandId == brandId);
-			if (categoryId.HasValue)
-				spec.Criteria = (P => P.CategoryId == categoryId);
-			if (brandId.HasValue && categoryId.HasValue)
-				spec.Criteria = (P => P.BrandId == brandId && P.CategoryId == categoryId);
+			spec.Criteria = P => 
+			(string.IsNullOrEmpty(search) || P.Name.Contains(search))&&
+			(!brandId.HasValue || P.BrandId == brandId.Value) &&
+			(!categoryId.HasValue || P.CategoryId == categoryId.Value);
 
 			spec.Includes.Add(P => P.Brand);
 			spec.Includes.Add(P => P.Category);
