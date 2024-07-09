@@ -20,10 +20,10 @@ namespace Talabat.Infrastructure
 			_dbContext = dbContext;
 		}
 
-		public async Task<IEnumerable<T>> GetAllAsync()
+		public async Task<IReadOnlyList<T>> GetAllAsync()
 			=>  await _dbContext.Set<T>().AsNoTracking().ToListAsync();
 
-		public async Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
+		public async Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
 			=>  await ApplySpecifications(spec).AsNoTracking().ToListAsync();
 		
 		public async Task<T?> GetAsync(int id)
