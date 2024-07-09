@@ -69,5 +69,14 @@ namespace Talabat.APIs.Controllers
 			return Ok(brands);
 		}
 
+		// baseUrl/api/products/categories
+		[HttpGet("categories")]
+		public async Task<ActionResult<IEnumerable<ProductCategory>>> GetCategories()
+		{
+			var categories = await _categoriesRepo.GetAllAsync();
+			if (categories is null)
+				return NotFound(new ApiResponse(404, "Categories Not Found"));
+			return Ok(categories);
+		}
 	}
 }
