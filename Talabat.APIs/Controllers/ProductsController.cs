@@ -29,17 +29,26 @@ namespace Talabat.APIs.Controllers
 
 		// baseUrl/api/Products
 		[HttpGet]
-		public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? sort)
+		public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? sort,
+			int? brandId,
+			int? categoryId)
 		{
 			var spec = new BaseSpecifications<Product>();
+			if (brandId.HasValue)
+				spec.Criteria = (P => P.BrandId == brandId);
+			if (categoryId.HasValue)
+				spec.Criteria = (P => P.CategoryId == categoryId);
+			if (brandId.HasValue && categoryId.HasValue)
+				spec.Criteria = (P => P.BrandId == brandId && P.CategoryId == categoryId);
+
 			spec.Includes.Add(P => P.Brand);
 			spec.Includes.Add(P => P.Category);
-			
+
 			switch (sort)
 			{
 				case "priceAsc":
 					spec.OrderBy = P => P.Price;
-						break;
+					break;
 				case "priceDesc":
 					spec.OrderByDesc = P => P.Price;
 					break;
