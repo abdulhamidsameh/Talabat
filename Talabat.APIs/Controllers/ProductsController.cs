@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
+using Talabat.APIs.Helpers;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Specifications;
+using Talabat.Core.Specifications.ProductSpec;
 
 namespace Talabat.APIs.Controllers
 {
@@ -29,21 +31,21 @@ namespace Talabat.APIs.Controllers
 
 		// baseUrl/api/Products
 		[HttpGet]
-		public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? sort,
-			int? brandId,
-			int? categoryId,
-			string? search)
+		public async Task<ActionResult<IReadOnlyList<Pagination<ProductToReturnDto>>>> GetProducts([FromQuery] ProductSpecParams specParams)
 		{
 			var spec = new BaseSpecifications<Product>();
-			spec.Criteria = P => 
-			(string.IsNullOrEmpty(search) || P.Name.Contains(search))&&
-			(!brandId.HasValue || P.BrandId == brandId.Value) &&
-			(!categoryId.HasValue || P.CategoryId == categoryId.Value);
+			spec.Criteria = P =>
+			(string.IsNullOrEmpty(specParams.Search) || P.Name.Contains(specParams.Search)) &&
+			(!specParams.BrandId.HasValue || P.BrandId == specParams.BrandId.Value) &&
+			(!specParams.CategoryId.HasValue || P.CategoryId == specParams.CategoryId.Value);
+
+			spec.Take = specParams.PageSize;
+			spec.Skip = specParams.PageSize * (specParams.PageIndex - 1);
 
 			spec.Includes.Add(P => P.Brand);
 			spec.Includes.Add(P => P.Category);
 
-			switch (sort)
+			switch (specParams.Sort)
 			{
 				case "priceAsc":
 					spec.OrderBy = P => P.Price;
@@ -64,7 +66,16 @@ namespace Talabat.APIs.Controllers
 			if (products is null)
 				return NotFound(new ApiResponse(404, "Products Was Not Found"));
 			var productsDto = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
-			return Ok(productsDto);
+
+			var pagination = new Pagination<ProductToReturnDto>()
+			{
+				Data = productsDto,
+				PageIndex = specParams.PageIndex,
+				PageSize = specParams.PageSize,
+				Count = spec.Count,
+			};
+			
+			return Ok(pagination);
 		}
 
 		// baseUrl/api/Products/id
