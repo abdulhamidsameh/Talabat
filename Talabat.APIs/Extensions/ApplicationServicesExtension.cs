@@ -52,6 +52,8 @@ namespace Talabat.APIs.Extensions
 				return ConnectionMultiplexer.Connect(connection!);
 			});
 
+			services.AddScoped<IBasketRepository, BasketRepository>();
+
 			return services;
 		}
 	}
