@@ -8,7 +8,8 @@ namespace Talabat.APIs.Helpers
 	{
 		public MappingProfile()
 		{
-
+			CreateMap<CustomerBasket,CustomerBasketDto>().ReverseMap();
+			CreateMap<BasketItem,BasketItemDto>().ReverseMap();
 
 			CreateMap<Product, ProductToReturnDto>()
 				.ForMember(D => D.Brand, options => options.MapFrom(S => S.Brand.Name))
