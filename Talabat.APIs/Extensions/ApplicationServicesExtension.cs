@@ -6,12 +6,13 @@ using Talabat.Infrastructure.Data;
 using Talabat.Infrastructure;
 using Talabat.APIs.Errors;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace Talabat.APIs.Extensions
 {
 	public static class ApplicationServicesExtension
 	{
-		public static IServiceCollection ApplicationServices(this IServiceCollection services,IConfiguration configuration)
+		public static IServiceCollection ApplicationServices(this IServiceCollection services, IConfiguration configuration)
 		{
 			// Add services to the container.
 
@@ -43,6 +44,12 @@ namespace Talabat.APIs.Extensions
 
 					return new BadRequestObjectResult(response);
 				};
+			});
+
+			services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
+			{
+				var connection = configuration.GetConnectionString("Redis");
+				return ConnectionMultiplexer.Connect(connection!);
 			});
 
 			return services;
