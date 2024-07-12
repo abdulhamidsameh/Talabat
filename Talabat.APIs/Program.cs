@@ -1,13 +1,17 @@
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Extensions;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.Middlewares;
+using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Infrastructure;
 using Talabat.Infrastructure.Data;
+using Talabat.Infrastructure.Identity;
+using Talabat.Infrastructure.Identity.DataSeed;
 
 namespace Talabat.APIs
 {
@@ -30,12 +34,17 @@ namespace Talabat.APIs
 			var services = scope.ServiceProvider;
 
 			var _dbContext = services.GetRequiredService<StoreContext>();
-
+			var _identityDbContext = services.GetRequiredService<ApplicationIdentityDbContext>();
+			var _userManger = services.GetRequiredService<UserManager<ApplicationUser>>();
 			var _loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
 			try
 			{
 				await _dbContext.Database.MigrateAsync();
+				await StoreContextSeed.SeedAsync(_dbContext);
+
+				await _identityDbContext.Database.MigrateAsync();
+				await ApplicationIdentityDataSeed.SeedUserAsync(_userManger);
 			}
 			catch (Exception ex)
 			{
@@ -45,7 +54,6 @@ namespace Talabat.APIs
 
 			}
 
-			await StoreContextSeed.SeedAsync(_dbContext);
 
 			#region Configure Kestrel Middlewares
 

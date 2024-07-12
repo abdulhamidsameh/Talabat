@@ -9,9 +9,9 @@ using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Specifications;
 using Talabat.Infrastructure.Data;
 
-namespace Talabat.Infrastructure
+namespace Talabat.Infrastructure.Generic_Repository
 {
-	public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 	{
 		private readonly StoreContext _dbContext;
 
