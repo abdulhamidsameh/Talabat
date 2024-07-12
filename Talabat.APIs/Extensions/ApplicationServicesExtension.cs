@@ -7,6 +7,9 @@ using Talabat.Infrastructure;
 using Talabat.APIs.Errors;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
+using Talabat.Infrastructure.Basket_Repository;
+using Talabat.Infrastructure.Generic_Repository;
+using Talabat.Infrastructure.Identity;
 
 namespace Talabat.APIs.Extensions
 {
@@ -53,6 +56,12 @@ namespace Talabat.APIs.Extensions
 			});
 
 			services.AddScoped<IBasketRepository, BasketRepository>();
+
+			services.AddDbContext<ApplicationIdentityDbContext>(options =>
+			{
+				options.UseSqlServer(configuration.GetConnectionString("IdentityConnection"));
+
+			});
 
 			return services;
 		}

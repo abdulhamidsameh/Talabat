@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Talabat.Core.Entities;
 using Talabat.Core.Specifications;
 
-namespace Talabat.Infrastructure
+namespace Talabat.Infrastructure.Generic_Repository
 {
-	internal static class SpecificationsEvaulator<T> where T : BaseEntity
+    internal static class SpecificationsEvaulator<T> where T : BaseEntity
 	{
 		public static IQueryable<T> GetQuery(IQueryable<T> inputQuery, ISpecifications<T> spec)
 		{

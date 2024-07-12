@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using Talabat.APIs.Dtos;
-using Talabat.Core.Entities;
+using Talabat.Core.Entities.Basket;
+using Talabat.Core.Entities.Product;
 
 namespace Talabat.APIs.Helpers
 {
-	public class MappingProfile : Profile
+    public class MappingProfile : Profile
 	{
 		public MappingProfile()
 		{

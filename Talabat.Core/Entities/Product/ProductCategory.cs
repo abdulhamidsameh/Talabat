@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Talabat.Core.Entities
+namespace Talabat.Core.Entities.Product
 {
-	public class ProductCategory : BaseEntity
-	{
+    public class ProductCategory : BaseEntity
+    {
         public string Name { get; set; } = null!;
 
     }
