@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
 using Talabat.Core.Entities.Identity;
+using Talabat.Core.Services.Contract;
 
 namespace Talabat.APIs.Controllers
 {
@@ -13,15 +14,18 @@ namespace Talabat.APIs.Controllers
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IMapper _mapper;
+		private readonly IAuthService _authService;
 
 		public AccountController(
 			UserManager<ApplicationUser> userManager,
 			SignInManager<ApplicationUser> signInManager,
-			IMapper mapper)
+			IMapper mapper,
+			IAuthService authService)
         {
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_mapper = mapper;
+			_authService = authService;
 		}
 
 		[HttpPost("login")]
@@ -37,7 +41,7 @@ namespace Talabat.APIs.Controllers
 				return Unauthorized(new ApiResponse(401, "Invalid Login"));
 
 			var userDto = _mapper.Map<ApplicationUser, UserDto>(user);
-			userDto.Token = "This Will Be Token";
+			userDto.Token = await _authService.CreateTokenAsync(user, _userManager);
 
 			return Ok(userDto);
 
@@ -66,7 +70,7 @@ namespace Talabat.APIs.Controllers
 			{
 				DisplayName = user.DisplayName,
 				Email = user.Email,
-				Token = "This Will Be Token",
+				Token = await _authService.CreateTokenAsync(user,_userManager),
 			});
 
 

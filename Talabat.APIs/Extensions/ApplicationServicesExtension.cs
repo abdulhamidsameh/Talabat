@@ -13,6 +13,8 @@ using Talabat.Infrastructure.Identity;
 using Talabat.Core.Entities.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
+using Talabat.Core.Services.Contract;
+using Talabat.Application.AuthService;
 
 namespace Talabat.APIs.Extensions
 {
@@ -68,6 +70,8 @@ namespace Talabat.APIs.Extensions
 
 			services.AddIdentity<ApplicationUser,IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
+			services.AddScoped<IAuthService, AuthService>();
 
 			return services;
 		}
