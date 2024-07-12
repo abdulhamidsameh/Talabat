@@ -10,6 +10,9 @@ using StackExchange.Redis;
 using Talabat.Infrastructure.Basket_Repository;
 using Talabat.Infrastructure.Generic_Repository;
 using Talabat.Infrastructure.Identity;
+using Talabat.Core.Entities.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
 
 namespace Talabat.APIs.Extensions
 {
@@ -62,6 +65,9 @@ namespace Talabat.APIs.Extensions
 				options.UseSqlServer(configuration.GetConnectionString("IdentityConnection"));
 
 			});
+
+			services.AddIdentity<ApplicationUser,IdentityRole>()
+				.AddEntityFrameworkStores<ApplicationIdentityDbContext>();
 
 			return services;
 		}
