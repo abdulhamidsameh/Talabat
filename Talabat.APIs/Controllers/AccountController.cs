@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
 using Talabat.Core.Entities.Identity;
@@ -73,9 +75,28 @@ namespace Talabat.APIs.Controllers
 				Token = await _authService.CreateTokenAsync(user,_userManager),
 			});
 
-
+			
 
 		}
+
+		[Authorize]
+		[HttpGet] // api/Account
+		public async Task<ActionResult<UserDto>> GetCurrentUser()
+		{
+			var email = User.FindFirstValue(ClaimTypes.Email);
+
+			var user = await _userManager.FindByEmailAsync(email!);
+
+			return Ok(new UserDto()
+			{
+				DisplayName = user?.DisplayName ?? string.Empty,
+				Email = user?.Email ?? string.Empty,
+				Token = await _authService.CreateTokenAsync(user!, _userManager),
+			});
+
+		}
+
+
 
 	}
 }
