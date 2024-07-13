@@ -27,7 +27,12 @@ namespace Talabat.APIs.Extensions
 		{
 			// Add services to the container.
 
-			services.AddControllers();
+			services.AddControllers()
+				.AddNewtonsoftJson(options =>
+				{
+					options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+				});
+
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			services.AddEndpointsApiExplorer();
 			services.AddSwaggerGen();
@@ -67,7 +72,7 @@ namespace Talabat.APIs.Extensions
 
 			services.AddDbContext<ApplicationIdentityDbContext>(options =>
 			{
-				options.UseSqlServer(configuration.GetConnectionString("IdentityConnection"));
+				options.UseSqlServer(configuration.GetConnectionString("IdentityConnection")).UseLazyLoadingProxies();
 
 			});
 

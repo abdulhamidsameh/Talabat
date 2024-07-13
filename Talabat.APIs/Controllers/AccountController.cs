@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
+using Talabat.APIs.Extensions;
 using Talabat.Core.Entities.Identity;
 using Talabat.Core.Services.Contract;
 
@@ -96,7 +98,14 @@ namespace Talabat.APIs.Controllers
 
 		}
 
+		[Authorize]
+		[HttpGet("address")]
+		public async Task<ActionResult<AddressDto>> GetUserAddress()
+		{
+			var user = await _userManager.FindUserWithAddressAsync(User);
 
+			return Ok(_mapper.Map<AddressDto>(user!.Address));
+		}
 
 	}
 }
