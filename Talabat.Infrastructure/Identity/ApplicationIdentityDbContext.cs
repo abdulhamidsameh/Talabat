@@ -18,7 +18,6 @@ namespace Talabat.Infrastructure.Identity
 
 		}
 
-        public DbSet<Address> Addresses { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);

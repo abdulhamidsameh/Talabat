@@ -13,6 +13,11 @@ using Talabat.Infrastructure.Identity;
 using Talabat.Core.Entities.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
+using Talabat.Core.Services.Contract;
+using Talabat.Application.AuthService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Talabat.APIs.Extensions
 {
@@ -22,7 +27,12 @@ namespace Talabat.APIs.Extensions
 		{
 			// Add services to the container.
 
-			services.AddControllers();
+			services.AddControllers()
+				.AddNewtonsoftJson(options =>
+				{
+					options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+				});
+
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			services.AddEndpointsApiExplorer();
 			services.AddSwaggerGen();
@@ -62,12 +72,35 @@ namespace Talabat.APIs.Extensions
 
 			services.AddDbContext<ApplicationIdentityDbContext>(options =>
 			{
-				options.UseSqlServer(configuration.GetConnectionString("IdentityConnection"));
+				options.UseSqlServer(configuration.GetConnectionString("IdentityConnection")).UseLazyLoadingProxies();
 
 			});
 
 			services.AddIdentity<ApplicationUser,IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
+			services.AddAuthentication(options =>
+			{
+				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			})
+				.AddJwtBearer(options =>
+				{
+					options.TokenValidationParameters = new TokenValidationParameters()
+					{
+						ValidateIssuer = true,
+						ValidIssuer = configuration["JWT:ValidIssuer"],
+						ValidateAudience = true,
+						ValidAudience = configuration["JWT:ValidAudience"],
+						ValidateIssuerSigningKey = true,
+						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:AuthKey"] ?? string.Empty)),
+						ValidateLifetime = true,
+						ClockSkew = TimeSpan.Zero,
+					
+					};
+				});
+
+			services.AddScoped<IAuthService, AuthService>();
 
 			return services;
 		}
