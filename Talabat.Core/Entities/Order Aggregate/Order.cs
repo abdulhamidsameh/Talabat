@@ -22,7 +22,7 @@ namespace Talabat.Core.Entities.Order_Aggregate
 		public virtual ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>(); //NP
 
 		//public virtual int DeliveryMethodId { get; set; } //FK
-		public virtual DeliveryMethod DeliveryMethod { get; set; } = null!; //NP
+		public virtual DeliveryMethod? DeliveryMethod { get; set; } = null!; //NP
 
 		public decimal GetTotal() => SubTotal + DeliveryMethod.Cost;
 	}
