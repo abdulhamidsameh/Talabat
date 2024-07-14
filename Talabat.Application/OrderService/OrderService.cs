@@ -2,27 +2,23 @@
 using Talabat.Core.Entities.Product;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Services.Contract;
+using Talabat.Core.UnitOfWork.Contract;
 
 namespace Talabat.Application.OrderService
 {
 	public class OrderService : IOrderService
 	{
 		private readonly IBasketRepository _basketRepository;
-		private readonly IGenericRepository<Product> _productRepository;
-		private readonly IGenericRepository<DeliveryMethod> _deliveryMethodRepo;
-		private readonly IGenericRepository<Order> _orderRepo;
+		private readonly IUnitOfWork _unitOfWork;
+
 
 		public OrderService(IBasketRepository basketRepo,
-			IGenericRepository<Product> productRepo,
-			IGenericRepository<DeliveryMethod> deliveryMethodRepo,
-			IGenericRepository<Order> orderRepo)
+			IUnitOfWork unitOfWork)
 		{
 			_basketRepository = basketRepo;
-			_productRepository = productRepo;
-			_deliveryMethodRepo = deliveryMethodRepo;
-			_orderRepo = orderRepo;
+			_unitOfWork = unitOfWork;
 		}
-		public async Task<Order> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
+		public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
 		{
 			// 1.Get Basket From Baskets Repo
 
@@ -35,7 +31,7 @@ namespace Talabat.Application.OrderService
 			{
 				foreach (var item in basket.Items)
 				{
-					var product = await _productRepository.GetAsync(item.Id);
+					var product = await _unitOfWork.Repository<Product>().GetAsync(item.Id);
 					if (product is not null)
 					{
 						var productItemOrdered = new ProductItemOrdered(product.Id, product.Name, product.PictureUrl); ;
@@ -54,7 +50,7 @@ namespace Talabat.Application.OrderService
 
 			// 4. Get Delivery Method From DeliveryMethods Repo
 
-			var deliveryMethod = await _deliveryMethodRepo.GetAsync(deliveryMethodId);
+			var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetAsync(deliveryMethodId);
 
 			// 5. Create Order
 
@@ -70,12 +66,13 @@ namespace Talabat.Application.OrderService
 
 			// 6. Save To Database [TODO]
 
-			_orderRepo.Add(oredr);
+			_unitOfWork.Repository<Order>().Add(oredr);
 
+			var result = await _unitOfWork.CompleteAsync();
+			if (result <= 0)
+				return null!;
 
 			return oredr;
-
-
 
 		}
 

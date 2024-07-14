@@ -18,6 +18,8 @@ using Talabat.Application.AuthService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Talabat.Core.UnitOfWork.Contract;
+using Talabat.Infrastructure._UnitOfWork;
 
 namespace Talabat.APIs.Extensions
 {
@@ -41,8 +43,6 @@ namespace Talabat.APIs.Extensions
 			{
 				options.UseSqlServer(configuration["ConnectionStrings:DefaultConnection"]).UseLazyLoadingProxies();
 			});
-
-			services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 			services.Configure<ApiBehaviorOptions>(options =>
 			{
@@ -101,6 +101,8 @@ namespace Talabat.APIs.Extensions
 				});
 
 			services.AddScoped<IAuthService, AuthService>();
+
+			services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 			return services;
 		}
