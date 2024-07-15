@@ -22,6 +22,7 @@ using Talabat.Core.UnitOfWork.Contract;
 using Talabat.Infrastructure._UnitOfWork;
 using Talabat.Application.OrderService;
 using Talabat.Application.ProductService;
+using Talabat.Application.PaymentService;
 
 namespace Talabat.APIs.Extensions
 {
@@ -109,6 +110,8 @@ namespace Talabat.APIs.Extensions
 			services.AddScoped<IOrderService, OrderService>();
 
 			services.AddScoped<IProductService,ProductService>();
+
+			services.AddScoped<IPaymentService,PaymentService>();
 
 			return services;
 		}

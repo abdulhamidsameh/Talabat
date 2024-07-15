@@ -6,6 +6,7 @@ namespace Talabat.APIs.Dtos
 	{
 		[Required]
 		public string Id { get; set; } = null!;
+        public int? DeliveryMethodId { get; set; }
         public List<BasketItemDto> Items { get; set; } = new List<BasketItemDto>();
     }
 }
