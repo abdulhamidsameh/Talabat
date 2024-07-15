@@ -37,6 +37,6 @@ namespace Talabat.Core.Entities.Order_Aggregate
 		//public virtual int DeliveryMethodId { get; set; } //FK
 		public virtual DeliveryMethod? DeliveryMethod { get; set; } = null!; //NP
 
-		public decimal GetTotal() => SubTotal + DeliveryMethod.Cost;
+		public decimal GetTotal() => SubTotal + DeliveryMethod!.Cost;
 	}
 }

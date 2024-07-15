@@ -2,17 +2,20 @@
 using Talabat.APIs.Dtos;
 using Talabat.Core.Entities.Basket;
 using Talabat.Core.Entities.Identity;
+using Talabat.Core.Entities.Order_Aggregate;
 using Talabat.Core.Entities.Product;
 
 namespace Talabat.APIs.Helpers
 {
-    public class MappingProfile : Profile
+	public class MappingProfile : Profile
 	{
 		public MappingProfile()
 		{
-			CreateMap<CustomerBasket,CustomerBasketDto>().ReverseMap();
-			CreateMap<BasketItem,BasketItemDto>().ReverseMap();
-			CreateMap<Address, AddressDto>().ReverseMap();
+			CreateMap<CustomerBasket, CustomerBasketDto>().ReverseMap();
+			CreateMap<BasketItem, BasketItemDto>().ReverseMap();
+			CreateMap<Core.Entities.Identity.Address, AddressDto>().ReverseMap();
+
+			CreateMap<Core.Entities.Order_Aggregate.Address, AddressDto>().ReverseMap();
 
 			CreateMap<Product, ProductToReturnDto>()
 				.ForMember(D => D.Brand, options => options.MapFrom(S => S.Brand.Name))

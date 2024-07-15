@@ -11,7 +11,6 @@ namespace Talabat.Application.OrderService
 		private readonly IBasketRepository _basketRepository;
 		private readonly IUnitOfWork _unitOfWork;
 
-
 		public OrderService(IBasketRepository basketRepo,
 			IUnitOfWork unitOfWork)
 		{
@@ -29,9 +28,10 @@ namespace Talabat.Application.OrderService
 
 			if (basket?.Items?.Count > 0)
 			{
+				var productRepository = _unitOfWork.Repository<Product>();
 				foreach (var item in basket.Items)
 				{
-					var product = await _unitOfWork.Repository<Product>().GetAsync(item.Id);
+					var product = await productRepository.GetAsync(item.Id);
 					if (product is not null)
 					{
 						var productItemOrdered = new ProductItemOrdered(product.Id, product.Name, product.PictureUrl); ;
