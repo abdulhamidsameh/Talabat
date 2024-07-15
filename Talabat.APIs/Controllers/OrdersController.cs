@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 using System.Security.Claims;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
@@ -26,7 +27,7 @@ namespace Talabat.APIs.Controllers
 		}
 
 		[HttpPost] // baseUrl/api/orders
-		public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
+		public async Task<ActionResult<Core.Entities.Order_Aggregate.Order>> CreateOrder(OrderDto orderDto)
 		{
 			var email = User.FindFirstValue(ClaimTypes.Email);
 			var address = _mapper.Map<AddressDto,Address>(orderDto.ShippingAddress);
@@ -39,7 +40,7 @@ namespace Talabat.APIs.Controllers
 		}
 
 		[HttpGet] // baseUrl/api/Orders
-		public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser()
+		public async Task<ActionResult<IReadOnlyList<Core.Entities.Order_Aggregate.Order>>> GetOrdersForUser()
 		{
 			var email = User.FindFirstValue(ClaimTypes.Email);
 			var orders = await _orderService.GetOrdersForUserAsync(email!);
@@ -49,6 +50,17 @@ namespace Talabat.APIs.Controllers
 			return Ok(selected);
 		}
 
+		[HttpGet("{id}")] // baseUrl/api/Orders/1
+
+		public async Task<ActionResult<Core.Entities.Order_Aggregate.Order>> GetOrder(int id)
+		{
+			var email = User.FindFirstValue(ClaimTypes.Email);
+			var order = await _orderService.GetOrderbyIdForUserAsync(email!, id);
+			if (order is null) return BadRequest(new ApiResponse(400));
+			if(order.BuyerEmail != email) return BadRequest(new ApiResponse(400));
+
+			return Ok(order);
+		}
 
     }
 }
