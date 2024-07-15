@@ -20,6 +20,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Talabat.Core.UnitOfWork.Contract;
 using Talabat.Infrastructure._UnitOfWork;
+using Talabat.Application.OrderService;
+using Talabat.Application.ProductService;
 
 namespace Talabat.APIs.Extensions
 {
@@ -103,6 +105,10 @@ namespace Talabat.APIs.Extensions
 			services.AddScoped<IAuthService, AuthService>();
 
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+			services.AddScoped<IOrderService, OrderService>();
+
+			services.AddScoped<IProductService,ProductService>();
 
 			return services;
 		}

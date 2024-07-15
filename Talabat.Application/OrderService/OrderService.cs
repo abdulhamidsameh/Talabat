@@ -2,6 +2,7 @@
 using Talabat.Core.Entities.Product;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Services.Contract;
+using Talabat.Core.Specifications;
 using Talabat.Core.UnitOfWork.Contract;
 
 namespace Talabat.Application.OrderService
@@ -10,7 +11,6 @@ namespace Talabat.Application.OrderService
 	{
 		private readonly IBasketRepository _basketRepository;
 		private readonly IUnitOfWork _unitOfWork;
-
 
 		public OrderService(IBasketRepository basketRepo,
 			IUnitOfWork unitOfWork)
@@ -29,9 +29,10 @@ namespace Talabat.Application.OrderService
 
 			if (basket?.Items?.Count > 0)
 			{
+				var productRepository = _unitOfWork.Repository<Product>();
 				foreach (var item in basket.Items)
 				{
-					var product = await _unitOfWork.Repository<Product>().GetAsync(item.Id);
+					var product = await productRepository.GetAsync(item.Id);
 					if (product is not null)
 					{
 						var productItemOrdered = new ProductItemOrdered(product.Id, product.Name, product.PictureUrl); ;
@@ -76,19 +77,17 @@ namespace Talabat.Application.OrderService
 
 		}
 
-		public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
-		{
-			throw new NotImplementedException();
-		}
+		public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+			=> await _unitOfWork.Repository<Order>().GetAllWithSpecAsync(new BaseSpecifications<Order>(O => O.BuyerEmail == buyerEmail));
 
-		public Task<Order> GetOrderbyIdForUserAsync(string buyerEmail, int orderId)
-		{
-			throw new NotImplementedException();
-		}
+		public async Task<Order?> GetOrderbyIdForUserAsync(string buyerEmail, int orderId)
+			=> await _unitOfWork.Repository<Order>().GetWithSpecAsync(new BaseSpecifications<Order>(O => O.BuyerEmail == buyerEmail && O.Id == orderId));
 
-		public Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
-		{
-			throw new NotImplementedException();
-		}
+		public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
+			=> await _unitOfWork.Repository<DeliveryMethod>().GetAllAsync();
+
+		
+
+		
 	}
 }
