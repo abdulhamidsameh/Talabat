@@ -27,7 +27,7 @@ namespace Talabat.APIs.Controllers
 		}
 
 		[HttpPost] // baseUrl/api/orders
-		public async Task<ActionResult<Core.Entities.Order_Aggregate.Order>> CreateOrder(OrderDto orderDto)
+		public async Task<ActionResult<OrderToReturnDto>> CreateOrder(OrderDto orderDto)
 		{
 			var email = User.FindFirstValue(ClaimTypes.Email);
 			var address = _mapper.Map<AddressDto, Address>(orderDto.ShippingAddress);
@@ -36,7 +36,9 @@ namespace Talabat.APIs.Controllers
 			if (order is null)
 				return BadRequest(new ApiResponse(400));
 
-			return Ok(order);
+			var orderToReturnDto = _mapper.Map<OrderToReturnDto>(order);
+
+			return Ok(orderToReturnDto);
 		}
 
 		[HttpGet] // baseUrl/api/Orders
