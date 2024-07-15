@@ -21,7 +21,7 @@ namespace Talabat.APIs.Controllers
 
 		public OrdersController(IOrderService orderService,
 			IMapper mapper)
-        {
+		{
 			_orderService = orderService;
 			_mapper = mapper;
 		}
@@ -30,7 +30,7 @@ namespace Talabat.APIs.Controllers
 		public async Task<ActionResult<Core.Entities.Order_Aggregate.Order>> CreateOrder(OrderDto orderDto)
 		{
 			var email = User.FindFirstValue(ClaimTypes.Email);
-			var address = _mapper.Map<AddressDto,Address>(orderDto.ShippingAddress);
+			var address = _mapper.Map<AddressDto, Address>(orderDto.ShippingAddress);
 			var order = await _orderService.CreateOrderAsync(email!, orderDto.BasketId, orderDto.DeliveryMethodId, address);
 
 			if (order is null)
@@ -40,27 +40,31 @@ namespace Talabat.APIs.Controllers
 		}
 
 		[HttpGet] // baseUrl/api/Orders
-		public async Task<ActionResult<IReadOnlyList<Core.Entities.Order_Aggregate.Order>>> GetOrdersForUser()
+		public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUser()
 		{
 			var email = User.FindFirstValue(ClaimTypes.Email);
 			var orders = await _orderService.GetOrdersForUserAsync(email!);
 
 			var selected = orders.Where(O => O.BuyerEmail == email);
 
-			return Ok(selected);
+			var orderDto = _mapper.Map<IEnumerable<OrderToReturnDto>>(selected);
+
+			return Ok(orderDto);
 		}
 
 		[HttpGet("{id}")] // baseUrl/api/Orders/1
 
-		public async Task<ActionResult<Core.Entities.Order_Aggregate.Order>> GetOrder(int id)
+		public async Task<ActionResult<OrderToReturnDto>> GetOrder(int id)
 		{
 			var email = User.FindFirstValue(ClaimTypes.Email);
 			var order = await _orderService.GetOrderbyIdForUserAsync(email!, id);
 			if (order is null) return BadRequest(new ApiResponse(400));
-			if(order.BuyerEmail != email) return BadRequest(new ApiResponse(400));
+			if (order.BuyerEmail != email) return BadRequest(new ApiResponse(400));
 
-			return Ok(order);
+			var orderDto = _mapper.Map<OrderToReturnDto>(order);
+
+			return Ok(orderDto);
 		}
 
-    }
+	}
 }
