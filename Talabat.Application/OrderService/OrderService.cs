@@ -78,19 +78,10 @@ namespace Talabat.Application.OrderService
 		}
 
 		public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
-		{
-			var orderRepository = _unitOfWork.Repository<Order>();
+			=> await _unitOfWork.Repository<Order>().GetAllWithSpecAsync(new BaseSpecifications<Order>(O => O.BuyerEmail == buyerEmail));
 
-			var orders = await orderRepository.GetAllAsync();
-			return orders;
-		}
-
-		public async Task<Order> GetOrderbyIdForUserAsync(string buyerEmail, int orderId)
-		{
-			var order = await _unitOfWork.Repository<Order>().GetAsync(orderId);
-
-			return order!;
-		}
+		public async Task<Order?> GetOrderbyIdForUserAsync(string buyerEmail, int orderId)
+			=> await _unitOfWork.Repository<Order>().GetWithSpecAsync(new BaseSpecifications<Order>(O => O.BuyerEmail == buyerEmail && O.Id == orderId));
 
 		public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
 			=> await _unitOfWork.Repository<DeliveryMethod>().GetAllAsync();

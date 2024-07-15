@@ -47,9 +47,7 @@ namespace Talabat.APIs.Controllers
 			var email = User.FindFirstValue(ClaimTypes.Email);
 			var orders = await _orderService.GetOrdersForUserAsync(email!);
 
-			var selected = orders.Where(O => O.BuyerEmail == email);
-
-			var orderDto = _mapper.Map<IEnumerable<OrderToReturnDto>>(selected);
+			var orderDto = _mapper.Map<IEnumerable<OrderToReturnDto>>(orders);
 
 			return Ok(orderDto);
 		}
@@ -61,10 +59,7 @@ namespace Talabat.APIs.Controllers
 			var email = User.FindFirstValue(ClaimTypes.Email);
 			var order = await _orderService.GetOrderbyIdForUserAsync(email!, id);
 			if (order is null) return BadRequest(new ApiResponse(400));
-			if (order.BuyerEmail != email) return BadRequest(new ApiResponse(400));
-
 			var orderDto = _mapper.Map<OrderToReturnDto>(order);
-
 			return Ok(orderDto);
 		}
 

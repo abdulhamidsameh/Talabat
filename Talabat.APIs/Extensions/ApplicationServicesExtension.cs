@@ -21,6 +21,7 @@ using System.Text;
 using Talabat.Core.UnitOfWork.Contract;
 using Talabat.Infrastructure._UnitOfWork;
 using Talabat.Application.OrderService;
+using Talabat.Application.ProductService;
 
 namespace Talabat.APIs.Extensions
 {
@@ -107,7 +108,7 @@ namespace Talabat.APIs.Extensions
 
 			services.AddScoped<IOrderService, OrderService>();
 
-			services.AddScoped(typeof(IGenericRepository<> ),typeof(GenericRepository<>));
+			services.AddScoped<IProductService,ProductService>();
 
 			return services;
 		}

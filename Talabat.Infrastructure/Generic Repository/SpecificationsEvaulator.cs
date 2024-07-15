@@ -9,7 +9,7 @@ using Talabat.Core.Specifications;
 
 namespace Talabat.Infrastructure.Generic_Repository
 {
-    internal static class SpecificationsEvaulator<T> where T : BaseEntity
+	internal static class SpecificationsEvaulator<T> where T : BaseEntity
 	{
 		public static IQueryable<T> GetQuery(IQueryable<T> inputQuery, ISpecifications<T> spec)
 		{
@@ -18,7 +18,7 @@ namespace Talabat.Infrastructure.Generic_Repository
 				query = query.Where(spec.Criteria);
 
 			spec.Count = query.Count();
-			
+
 
 			//query = spec.Includes.Aggregate(query,(currentQuery,includeExpression) => currentQuery.Include(includeExpression));
 
@@ -28,6 +28,7 @@ namespace Talabat.Infrastructure.Generic_Repository
 			else if (spec.OrderByDesc is not null)
 				query = query.OrderByDescending(spec.OrderByDesc);
 
+			if (spec.Skip > 0 || spec.Take > 0)
 				query = query.Skip(spec.Skip).Take(spec.Take);
 
 			if (spec.Includes.Count > 0)
