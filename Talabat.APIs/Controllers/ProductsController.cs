@@ -10,24 +10,19 @@ using Talabat.Core.Entities.Product;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Specifications;
 using Talabat.Core.Specifications.ProductSpec;
+using Talabat.Core.UnitOfWork.Contract;
 
 namespace Talabat.APIs.Controllers
 {
     public class ProductsController : BaseApiController
 	{
-		private readonly IGenericRepository<Product> _productRepo;
-		private readonly IGenericRepository<ProductBrand> _brandsRepo;
-		private readonly IGenericRepository<ProductCategory> _categoriesRepo;
+		private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
 
-		public ProductsController(IGenericRepository<Product> productRepo,
-			IGenericRepository<ProductBrand> brandsRepo,
-			IGenericRepository<ProductCategory> categoriesRepo,
+		public ProductsController(IUnitOfWork unitOfWork,
 			IMapper mapper)
 		{
-			_productRepo = productRepo;
-			_brandsRepo = brandsRepo;
-			_categoriesRepo = categoriesRepo;
+			_unitOfWork = unitOfWork;
 			_mapper = mapper;
 		}
 
@@ -63,7 +58,7 @@ namespace Talabat.APIs.Controllers
 					break;
 			}
 
-			var products = await _productRepo.GetAllWithSpecAsync(spec);
+			var products = await _unitOfWork.Repository<Product>().GetAllWithSpecAsync(spec);
 
 			if (products is null)
 				return NotFound(new ApiResponse(404, "Products Was Not Found"));
@@ -87,7 +82,7 @@ namespace Talabat.APIs.Controllers
 			var spec = new BaseSpecifications<Product>(P => P.Id == id);
 			spec.Includes.Add(P => P.Brand);
 			spec.Includes.Add(P => P.Category);
-			var product = await _productRepo.GetWithSpecAsync(spec);
+			var product = await _unitOfWork.Repository<Product>().GetWithSpecAsync(spec);
 			if (product is null)
 				return NotFound(new ApiResponse(404, "Product Was Not Found"));
 
@@ -101,7 +96,7 @@ namespace Talabat.APIs.Controllers
 		[HttpGet("brands")]
 		public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
 		{
-			var brands = await _brandsRepo.GetAllAsync();
+			var brands = await _unitOfWork.Repository<ProductBrand>().GetAllAsync();
 			if (brands is null)
 				return NotFound(new ApiResponse(404, "Brands Not Found"));
 			return Ok(brands);
@@ -111,7 +106,7 @@ namespace Talabat.APIs.Controllers
 		[HttpGet("categories")]
 		public async Task<ActionResult<IReadOnlyList<ProductCategory>>> GetCategories()
 		{
-			var categories = await _categoriesRepo.GetAllAsync();
+			var categories = await _unitOfWork.Repository<ProductCategory>().GetAllAsync();
 			if (categories is null)
 				return NotFound(new ApiResponse(404, "Categories Not Found"));
 			return Ok(categories);

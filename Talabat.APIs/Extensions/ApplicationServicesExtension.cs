@@ -107,6 +107,8 @@ namespace Talabat.APIs.Extensions
 
 			services.AddScoped<IOrderService, OrderService>();
 
+			services.AddScoped(typeof(IGenericRepository<> ),typeof(GenericRepository<>));
+
 			return services;
 		}
 	}

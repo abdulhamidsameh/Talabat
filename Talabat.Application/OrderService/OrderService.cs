@@ -2,6 +2,7 @@
 using Talabat.Core.Entities.Product;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Services.Contract;
+using Talabat.Core.Specifications;
 using Talabat.Core.UnitOfWork.Contract;
 
 namespace Talabat.Application.OrderService
@@ -76,6 +77,15 @@ namespace Talabat.Application.OrderService
 
 		}
 
+		public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+		{
+			var orderRepository = _unitOfWork.Repository<Order>();
+
+			var orders = await orderRepository.GetAllAsync();
+			return orders;
+		}
+
+
 		public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
 		{
 			throw new NotImplementedException();
@@ -86,9 +96,6 @@ namespace Talabat.Application.OrderService
 			throw new NotImplementedException();
 		}
 
-		public Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
-		{
-			throw new NotImplementedException();
-		}
+		
 	}
 }

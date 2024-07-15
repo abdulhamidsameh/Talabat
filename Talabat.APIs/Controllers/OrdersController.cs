@@ -6,7 +6,9 @@ using System.Security.Claims;
 using Talabat.APIs.Dtos;
 using Talabat.APIs.Errors;
 using Talabat.Core.Entities.Order_Aggregate;
+using Talabat.Core.Entities.Product;
 using Talabat.Core.Services.Contract;
+using Talabat.Core.Specifications;
 
 namespace Talabat.APIs.Controllers
 {
@@ -35,6 +37,18 @@ namespace Talabat.APIs.Controllers
 
 			return Ok(order);
 		}
+
+		[HttpGet] // baseUrl/api/Orders
+		public async Task<ActionResult<IReadOnlyList<Order>>> GetOrdersForUser()
+		{
+			var email = User.FindFirstValue(ClaimTypes.Email);
+			var orders = await _orderService.GetOrdersForUserAsync(email!);
+
+			var selected = orders.Where(O => O.BuyerEmail == email);
+
+			return Ok(selected);
+		}
+
 
     }
 }
