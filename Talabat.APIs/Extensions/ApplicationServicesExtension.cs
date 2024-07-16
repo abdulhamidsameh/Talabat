@@ -79,7 +79,7 @@ namespace Talabat.APIs.Extensions
 
 			});
 
-			services.AddIdentity<ApplicationUser,IdentityRole>()
+			services.AddIdentity<ApplicationUser, IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationIdentityDbContext>();
 
 			services.AddAuthentication(options =>
@@ -99,7 +99,7 @@ namespace Talabat.APIs.Extensions
 						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:AuthKey"] ?? string.Empty)),
 						ValidateLifetime = true,
 						ClockSkew = TimeSpan.Zero,
-					
+
 					};
 				});
 
@@ -109,9 +109,18 @@ namespace Talabat.APIs.Extensions
 
 			services.AddScoped<IOrderService, OrderService>();
 
-			services.AddScoped<IProductService,ProductService>();
+			services.AddScoped<IProductService, ProductService>();
 
-			services.AddScoped<IPaymentService,PaymentService>();
+			services.AddScoped<IPaymentService, PaymentService>();
+
+			services.AddCors(options =>
+			{
+				options.AddPolicy("MyPolicy", policyOptioons =>
+				{
+					policyOptioons.AllowAnyHeader().AllowAnyMethod().WithOrigins(configuration["FrontBaseUrl"]);
+				});
+			}
+				);
 
 			return services;
 		}
