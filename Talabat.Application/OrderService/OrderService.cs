@@ -11,12 +11,15 @@ namespace Talabat.Application.OrderService
 	{
 		private readonly IBasketRepository _basketRepository;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IPaymentService _paymentService;
 
 		public OrderService(IBasketRepository basketRepo,
-			IUnitOfWork unitOfWork)
+			IUnitOfWork unitOfWork,
+			IPaymentService paymentService)
 		{
 			_basketRepository = basketRepo;
 			_unitOfWork = unitOfWork;
+			_paymentService = paymentService;
 		}
 		public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, Address shippingAddress)
 		{
@@ -48,10 +51,19 @@ namespace Talabat.Application.OrderService
 
 			var subTotal = orderItems.Sum(O => O.Quantity * O.Price);
 
+			var orderRepository = _unitOfWork.Repository<Order>();
 
 			// 4. Get Delivery Method From DeliveryMethods Repo
 
 			var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetAsync(deliveryMethodId);
+
+			var existingOrder = await orderRepository.GetWithSpecAsync(new BaseSpecifications<Order>(O => O.PaymentIntentId == basket!.PaymentIntentId));
+
+			if(existingOrder is not null)
+			{
+				orderRepository.Delete(existingOrder);
+				await _paymentService.CreateOrUpdatePaymentIntentAsync(basketId);
+			}
 
 			// 5. Create Order
 
@@ -61,13 +73,14 @@ namespace Talabat.Application.OrderService
 				shippingAddress: shippingAddress,
 				subTotal: subTotal,
 				deliveryMethod:deliveryMethod,
-				items: orderItems
+				items: orderItems,
+				paymentIntentId: basket!.PaymentIntentId!
 				
 				);
 
 			// 6. Save To Database [TODO]
 
-			_unitOfWork.Repository<Order>().Add(oredr);
+			orderRepository.Add(oredr);
 
 			var result = await _unitOfWork.CompleteAsync();
 			if (result <= 0)

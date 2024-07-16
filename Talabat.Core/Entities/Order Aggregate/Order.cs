@@ -8,13 +8,14 @@ namespace Talabat.Core.Entities.Order_Aggregate
 {
 	public class Order : BaseEntity
 	{
-		public Order(string buyerEmail, Address shippingAddress, decimal subTotal, ICollection<OrderItem> items, DeliveryMethod? deliveryMethod)
+		public Order(string buyerEmail, Address shippingAddress, decimal subTotal, ICollection<OrderItem> items, DeliveryMethod? deliveryMethod,string paymentIntentId)
 		{
 			BuyerEmail = buyerEmail;
 			ShippingAddress = shippingAddress;
 			SubTotal = subTotal;
 			Items = items;
 			DeliveryMethod = deliveryMethod;
+			PaymentIntentId = paymentIntentId;
 		}
 
 		public Order()
@@ -30,7 +31,7 @@ namespace Talabat.Core.Entities.Order_Aggregate
 
 		public decimal SubTotal { get; set; }
 
-		public string PaymentIntentId { get; set; } = string.Empty;
+		public string PaymentIntentId { get; set; } = null!;
 
 		public virtual ICollection<OrderItem> Items { get; set; } = new HashSet<OrderItem>(); //NP
 
