@@ -23,7 +23,7 @@ using Talabat.Infrastructure._UnitOfWork;
 using Talabat.Application.OrderService;
 using Talabat.Application.ProductService;
 using Talabat.Application.PaymentService;
-using Talabat.Application.CacheService;
+using Talabat.Application.CasheService;
 
 namespace Talabat.APIs.Extensions
 {

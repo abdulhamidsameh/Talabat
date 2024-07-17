@@ -49,10 +49,8 @@ namespace Talabat.APIs.Helpers
 			var keyBuilder = new StringBuilder();
 
 			keyBuilder.Append(request.Path);
-			foreach (var queryParam in request.Query)
-			{
+			foreach (var queryParam in request.Query.OrderBy(q => q.Key))
 				keyBuilder.Append($"?{queryParam.Key}={queryParam.Value}");
-			}
 
 			return keyBuilder.ToString();
 		}
