@@ -34,62 +34,34 @@ namespace Talabat.APIs.Controllers
 			return Ok(basket);
 		}
 
-		[HttpPost("{state}")]
-		public async Task<IActionResult> WebHook(string state)
+		[HttpPost("webhook")]
+		public async Task<IActionResult> WebHook()
 		{
 			var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+			
+				var stripeEvent = EventUtility.ConstructEvent(json,
+					Request.Headers["Stripe-Signature"], webHookSecrte);
 
-			var stripeEvent = EventUtility.ConstructEvent(json,
-				Request.Headers["Stripe-Signature"], webHookSecrte);
+				var paymentIntent = (PaymentIntent)stripeEvent.Data.Object;
+				Order? order;
+				// Handle the event
+				switch (stripeEvent.Type)
+				{
+					case Events.PaymentIntentSucceeded:
+						order = await _paymentService.UpdateOrderStatus(paymentIntent.Id, true);
+						_logger.LogInformation("Order is succeeded {0}", order?.PaymentIntentId);
+						_logger.LogInformation("Unhandled event type: {0}", stripeEvent.Type);
+						break;
+					case Events.PaymentIntentPaymentFailed:
+						order = await _paymentService.UpdateOrderStatus(paymentIntent.Id, false);
+						_logger.LogInformation("Order is failed {0}", order?.PaymentIntentId);
+						_logger.LogInformation("Unhandled event type: {0}", stripeEvent.Type);
+						break;
+				}
 
-			var paymentIntent = (PaymentIntent)stripeEvent.Data.Object;
-			// Handle the event
-
-			Order? order;
-
-			//switch (stripeEvent.Type)
-			//{
-			//	case Events.PaymentIntentSucceeded:
-
-			//		order = await _paymentService.UpdateOrderStatus(paymentIntent.Id, true);
-
-			//		_logger.LogInformation("Order is Succeded {0}", order?.PaymentIntentId);
-			//		_logger.LogInformation("Unhandled event type: {0}", stripeEvent.Type);
-
-			//		break;
-			//	case Events.PaymentIntentPaymentFailed:
-
-			//		order = await _paymentService.UpdateOrderStatus(paymentIntent.Id, false);
-			//		_logger.LogInformation("Order is Faild {0}", order?.PaymentIntentId);
-			//		_logger.LogInformation("Unhandled event type: {0}", stripeEvent.Type);
-
-			//		break;
-			//	default:
-			//		break;
-			//}
-
-			switch (state)
-			{
-				case "success":
-
-					order = await _paymentService.UpdateOrderStatus(paymentIntent.Id, true);
-
-					_logger.LogInformation("Order is Succeded {0}", order?.PaymentIntentId);
-					_logger.LogInformation("Unhandled event type: {0}", stripeEvent.Type);
-
-					break;
-				case "failed":
-
-					order = await _paymentService.UpdateOrderStatus(paymentIntent.Id, false);
-					_logger.LogInformation("Order is Faild {0}", order?.PaymentIntentId);
-					_logger.LogInformation("Unhandled event type: {0}", stripeEvent.Type);
-
-					break;
-				default:
-					break;
-			}
-
-			return Ok();
+				return Ok();
+			
+			
 		}
 
 	}
