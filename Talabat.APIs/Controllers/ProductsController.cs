@@ -30,6 +30,7 @@ namespace Talabat.APIs.Controllers
 
 		// baseUrl/api/Products
 		[HttpGet]
+		[Cashed(600)]
 		public async Task<ActionResult<IReadOnlyList<Pagination<ProductToReturnDto>>>> GetProducts([FromQuery] ProductSpecParams specParams)
 		{
 			var productsService = await _productService.GetProductsAsync(specParams);

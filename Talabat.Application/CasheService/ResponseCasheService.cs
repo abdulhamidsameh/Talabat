@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Talabat.Core.Services.Contract;
 
-namespace Talabat.Application.CacheService
+namespace Talabat.Application.CasheService
 {
 	public class ResponseCasheService : IResponseCasheService
 	{

@@ -23,6 +23,7 @@ using Talabat.Infrastructure._UnitOfWork;
 using Talabat.Application.OrderService;
 using Talabat.Application.ProductService;
 using Talabat.Application.PaymentService;
+using Talabat.Application.CacheService;
 
 namespace Talabat.APIs.Extensions
 {
@@ -121,6 +122,8 @@ namespace Talabat.APIs.Extensions
 				});
 			}
 				);
+
+			services.AddSingleton<IResponseCasheService, ResponseCasheService>();
 
 			return services;
 		}
