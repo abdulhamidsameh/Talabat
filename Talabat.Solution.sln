@@ -5,11 +5,13 @@ VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Talabat.APIs", "Talabat.APIs\Talabat.APIs.csproj", "{BFD559A4-5EF3-4832-A1C8-7299556E05BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Talabat.Core", "Talabat.Core\Talabat.Core.csproj", "{01DED2B8-D7D3-4A30-A8A9-DC6D5A6F8CB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Talabat.Core", "Talabat.Core\Talabat.Core.csproj", "{01DED2B8-D7D3-4A30-A8A9-DC6D5A6F8CB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Talabat.Infrastructure", "Talabat.Infrastructure\Talabat.Infrastructure.csproj", "{6D251273-E49A-427B-91F1-A1D60862DBF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Talabat.Infrastructure", "Talabat.Infrastructure\Talabat.Infrastructure.csproj", "{6D251273-E49A-427B-91F1-A1D60862DBF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Talabat.Application", "Talabat.Application\Talabat.Application.csproj", "{EC1A8BD3-8EE0-470F-BDA1-41395B45A69E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Talabat.Application", "Talabat.Application\Talabat.Application.csproj", "{EC1A8BD3-8EE0-470F-BDA1-41395B45A69E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminDashboard", "AdminDashboard\AdminDashboard.csproj", "{37314CC0-A254-4762-9B70-63E41E8923FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{EC1A8BD3-8EE0-470F-BDA1-41395B45A69E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC1A8BD3-8EE0-470F-BDA1-41395B45A69E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC1A8BD3-8EE0-470F-BDA1-41395B45A69E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37314CC0-A254-4762-9B70-63E41E8923FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37314CC0-A254-4762-9B70-63E41E8923FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37314CC0-A254-4762-9B70-63E41E8923FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37314CC0-A254-4762-9B70-63E41E8923FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
