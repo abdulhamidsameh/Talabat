@@ -1,7 +1,10 @@
+using AdminDashboard.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Talabat.Core.Entities.Identity;
+using Talabat.Core.UnitOfWork.Contract;
+using Talabat.Infrastructure._UnitOfWork;
 using Talabat.Infrastructure.Data;
 using Talabat.Infrastructure.Identity;
 
@@ -31,6 +34,9 @@ namespace AdminDashboard
 			builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 			.AddEntityFrameworkStores<ApplicationIdentityDbContext>();
 
+			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+			builder.Services.AddAutoMapper(typeof(MapProfile));
 
 			var app = builder.Build();
 
